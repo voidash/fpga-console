@@ -1,0 +1,58 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/cdjk/Documents/github/verilog
+vandOr
+!s110 1676559367
+!i10b 1
+!s100 AzU8bWAOdb5RPM;XeGXSl3
+Z1 !s11b Dg1SIo80bB@j0V0VzS_@n1
+IU??QZKP^=L>cRZYi8;:Tm1
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1676553193
+8/home/cdjk/Documents/github/verilog/andOr.v
+F/home/cdjk/Documents/github/verilog/andOr.v
+!i122 7
+L0 1 11
+Z3 OV;L;2020.1;71
+r1
+!s85 0
+31
+!s108 1676559367.000000
+!s107 /home/cdjk/Documents/github/verilog/andOr.v|
+!s90 -reportprogress|300|-work|work|-stats=none|/home/cdjk/Documents/github/verilog/andOr.v|
+!i113 1
+Z4 o-work work
+Z5 tCvgOpt 0
+nand@or
+vled_blink
+!s110 1676559327
+!i10b 1
+!s100 GBLVFoZHNBR@bmUiLNC3B0
+R1
+IAC5[K`XR=l3>WcbG^2O_U0
+R2
+R0
+w1676555522
+8ledBlink.v
+FledBlink.v
+!i122 6
+L0 1 98
+R3
+r1
+!s85 0
+31
+!s108 1676559327.000000
+!s107 ledBlink.v|/home/cdjk/Documents/github/verilog/ledBlink_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|/home/cdjk/Documents/github/verilog/ledBlink_tb.v|
+!i113 1
+R4
+R5

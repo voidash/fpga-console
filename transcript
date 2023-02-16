@@ -1,0 +1,117 @@
+cd /home/cdjk/Documents/github/verilog
+# Load canceled
+vlib work
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/andOr.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:00:25 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/andOr.v 
+# -- Compiling module andOr
+# 
+# Top level modules:
+# 	andOr
+# End time: 19:00:25 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+vsim work.andOr
+# vsim work.andOr 
+# Start time: 19:00:34 on Feb 16,2023
+# Loading work.andOr
+add wave -position insertpoint  \
+sim:/andOr/inp1
+add wave -position insertpoint  \
+sim:/andOr/inp2
+add wave -position insertpoint  \
+sim:/andOr/inp3
+add wave -position insertpoint  \
+sim:/andOr/out1
+add wave -position insertpoint  \
+sim:/andOr/g1
+force -freeze sim:/andOr/inp1 1 0
+force -freeze sim:/andOr/inp2 1 0
+force -freeze sim:/andOr/inp3 0 0
+run
+force -freeze sim:/andOr/inp2 0 0
+run
+quit -sim
+# End time: 19:35:47 on Feb 16,2023, Elapsed time: 0:35:13
+# Errors: 0, Warnings: 0
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:35:51 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v 
+# -- Compiling module led_blink
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(63): (vlog-2730) Undefined variable: 'c_CNT_10Hz'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(89): (vlog-2730) Undefined variable: 'r_TOGGLE_1HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(90): (vlog-2730) Undefined variable: 'r_TOGGLE_10HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(91): (vlog-2730) Undefined variable: 'r_TOGGLE_50HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(92): (vlog-2730) Undefined variable: 'r_TOGGLE_100HZ'.
+# End time: 19:35:51 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 5, Warnings: 0
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:35:53 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v 
+# -- Compiling module led_blink
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(63): (vlog-2730) Undefined variable: 'c_CNT_10Hz'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(89): (vlog-2730) Undefined variable: 'r_TOGGLE_1HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(90): (vlog-2730) Undefined variable: 'r_TOGGLE_10HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(91): (vlog-2730) Undefined variable: 'r_TOGGLE_50HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(92): (vlog-2730) Undefined variable: 'r_TOGGLE_100HZ'.
+# End time: 19:35:53 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 5, Warnings: 0
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:36:04 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v 
+# -- Compiling module led_blink
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(63): (vlog-2730) Undefined variable: 'c_CNT_10Hz'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(89): (vlog-2730) Undefined variable: 'r_TOGGLE_1HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(90): (vlog-2730) Undefined variable: 'r_TOGGLE_10HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(91): (vlog-2730) Undefined variable: 'r_TOGGLE_50HZ'.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(92): (vlog-2730) Undefined variable: 'r_TOGGLE_100HZ'.
+# End time: 19:36:04 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 5, Warnings: 0
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:36:36 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v 
+# -- Compiling module led_blink
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink.v(63): (vlog-2730) Undefined variable: 'c_CNT_10Hz'.
+# End time: 19:36:36 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 1, Warnings: 0
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:37:12 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink.v 
+# -- Compiling module led_blink
+# 
+# Top level modules:
+# 	led_blink
+# End time: 19:37:13 on Feb 16,2023, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+vsim work.led_blink
+# vsim work.led_blink 
+# Start time: 19:37:15 on Feb 16,2023
+# Loading work.led_blink
+add wave -position insertpoint  \
+sim:/led_blink/i_clock
+quit -sim
+# End time: 20:38:41 on Feb 16,2023, Elapsed time: 1:01:26
+# Errors: 0, Warnings: 0
+# Loading project awesome
+# Compile of ledBlink.v was successful.
+# Compile of ledBlink_tb.v failed with 3 errors.
+# Compile of ledBlink_tb.v failed with 3 errors.
+vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink_tb.v
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 20:39:47 on Feb 16,2023
+# vlog -reportprogress 300 -work work /home/cdjk/Documents/github/verilog/ledBlink_tb.v 
+# -- Compiling module led_blink
+# -- Compiling module led_blink_tb
+# ** Error: (vlog-13069) /home/cdjk/Documents/github/verilog/ledBlink_tb.v(20): near ")": syntax error, unexpected ')', expecting .* or '.'.
+# ** Error: (vlog-13069) /home/cdjk/Documents/github/verilog/ledBlink_tb.v(22): near "<=": syntax error, unexpected <=, expecting '('.
+# ** Error: /home/cdjk/Documents/github/verilog/ledBlink_tb.v(27): (vlog-13205) Syntax error found in the scope following 'r_SWITCH_1'. Is there a missing '::'?
+# End time: 20:39:47 on Feb 16,2023, Elapsed time: 0:00:00
+# Errors: 3, Warnings: 0
+# /home/cdjk/intelFPGA/20.1/modelsim_ase/linuxaloem/vlog failed.
+# Compile of ledBlink_tb.v failed with 3 errors.
+# Compile of andOr.v was successful.
