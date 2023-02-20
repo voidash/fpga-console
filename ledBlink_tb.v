@@ -16,10 +16,10 @@ led_blink UUT
     .i_enable(r_ENABLE),
     .i_switch_1(r_SWITCH_1),
     .i_switch_2(r_SWITCH_2),
-    .o_led_drive(w_LED_DRIVE),
+    .o_led_drive(w_LED_DRIVE)
 );
 
-awlays #20 r_CLOCK <= !r_CLOCK
+always #20 r_CLOCK <= !r_CLOCK;
 
 initial begin
     r_ENABLE <= 1'b1;
