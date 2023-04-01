@@ -1,4 +1,8 @@
+#ignore all
 *
+#dont ignore files with extension
 !*.*
+# dont' ignore directory
+!*/
 a.out
 *.vcd
