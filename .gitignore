@@ -6,3 +6,4 @@
 !*/
 a.out
 *.vcd
+node_modules/
