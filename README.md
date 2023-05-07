@@ -10,3 +10,5 @@ Problem set from https://hdlbits.01xz.net/wiki/Problem_sets
 `vvp a.out`
 
 `gtkwave file.vcd`
+
+https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-Doc/flash-in-linux.html
