@@ -1,14 +1,14 @@
 module flashNavigator
 #(
-    parameter STARTUP_WAIT = 32'd10000000
+    parameter STARTUP_WAIT = 32'd10000000,
+    parameter MEMORY_LENGTH = 4 
 ) (
     input clk,
     output reg flashClk = 0,
     input flashMiso,
     output reg flashMosi,
     output reg flashCs = 1,
-    input [5:0] charAddress,
-    output reg [7:0] charOutput = 0,
+    output reg [((MEMORY_LENGTH * 8)-1):0] dataBuffer = 0,
     input btn1,
     input btn2
 );
@@ -17,8 +17,8 @@ module flashNavigator
     reg [7:0] command = 8'h03;
     reg [7:0] currentByteOut = 0;
     reg [7:0] currentByteNum = 0;
-    reg [255:0] dataIn = 0;
-    reg [255:0] dataInBuffer = 0;
+    reg [((MEMORY_LENGTH * 8) - 1):0] dataIn = 0;
+    // reg [255:0] dataInBuffer = 0;
 
     localparam STATE_INIT_POWER = 8'd0;
     localparam STATE_LOAD_CMD_TO_SEND = 8'd1;
@@ -34,12 +34,15 @@ module flashNavigator
     reg [2:0] state = 0;
     reg [2:0] returnState = 0;
 
+    reg dataReady = 0;
+
       always @(posedge clk) begin
       case (state)
   	    STATE_INIT_POWER: begin
             if (counter > STARTUP_WAIT) begin
                 state <= STATE_LOAD_CMD_TO_SEND;
                 counter <= 32'b0;
+                dataReady <= 0;
                 currentByteNum <= 0;
                 currentByteOut <= 0;
             end
@@ -48,7 +51,7 @@ module flashNavigator
             end
         STATE_LOAD_CMD_TO_SEND: begin
             flashCs <= 0;
-            // choose only the first 8 bits out of the 24 bits
+            // choose only the MSB 8 bits out of the 24 bits
             dataToSend[23-:8] <= command; 
             bitsToSend <= 8;
             state <= STATE_SEND;
@@ -82,11 +85,17 @@ module flashNavigator
             if (counter[0] == 1'd0) begin
                 flashClk <= 0;
                 counter <= counter + 1;
+                // reading 8th byte means setting it to counter to = 1000
                 if (counter[3:0] == 0 && counter > 0) begin
+                    // counter <= 1;
                     dataIn[(currentByteNum << 3) +: 8] <= currentByteOut;
+                    currentByteOut <= 0;
                     currentByteNum <= currentByteNum + 1;
-                    if (currentByteNum == 31)
+                    if (currentByteNum == MEMORY_LENGTH)
+                    begin
                         state <= STATE_DONE;
+                        flashCs <= 1;
+                    end
                 end
             end
             else begin
@@ -99,9 +108,12 @@ module flashNavigator
         STATE_DONE: begin
             dataReady <= 1;
             flashCs <= 1;
-            dataInBuffer <= dataIn;
+            dataBuffer <= dataIn;
             counter <= STARTUP_WAIT;
-            state <= STATE_INIT_POWER;
+            if (btn2 == 0) begin
+                readAddress <= readAddress + 1;
+                state <= STATE_INIT_POWER;
+            end
         end
 
 
