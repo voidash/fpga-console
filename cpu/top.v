@@ -1,58 +1,71 @@
-`default_nettype none
-
-module top
-#(
-  parameter STARTUP_WAIT = 32'd10000000
-)
-(
+module top #(
+    parameter STARTUP_WAIT = 32'd10000000
+) (
     input clk,
     output flashClk,
     input flashMiso,
     output flashMosi,
     output flashCs,
+    output uart_tx,
     input btn1,
     input btn2,
-    output [5:0] led
 );
+    
+    
 
-// intermediate buttons because of 1.8v and 3.3v banks
-reg btn1Reg = 1, btn2Reg = 1;
-always @(negedge clk) begin
-    btn1Reg <= btn1 ? 0 : 1;
-    btn2Reg <= btn2 ? 0 : 1;
-end
+reg [23:0] flashReadAddr = 1;
+reg enableFlash = 1;
+    always @(posedge clk)
+    begin
+        if (counter == 32'd10000000)
+        begin
+            enableFlash <= 0;
+            counter <= 0;
+        end
+        else 
+            counter <= counter + 1;
+    end
 
-wire [10:0] flashReadAddr;
-wire [7:0] byteRead;
-wire enableFlash;
-wire flashDataReady;
+    always @(negedge btn1)
+    begin
+        flashReadAddr <= flashReadAddr + 1;
+        enableFlash <= 1;
+        counter <= 0;
+    end
 
-flash externalFlash(
-    clk,
-    flashClk,
-    flashMiso,
-    flashMosi,
-    flashCs,
-    flashReadAddr,
-    byteRead,
-    enableFlash,
-    flashDataReady
-);
+    // always @(negedge btn2)
+    // begin
+    //     if(flashReadAddr > 0)
+    //     begin
+    //         flashReadAddr <= flashReadAddr - 1;
+    //         enableFlash <= 1;
+    //         counter <= 0;
+    //     end
+    // end
+    localparam MEMORY_LENGTH = 1;
+    localparam DELAY_FRAMES = 234;
+    wire [((MEMORY_LENGTH * 8) - 1):0] data;
+    wire dataReady;
 
-wire [7:0] cpuChar;
-wire [5:0] cpuCharIndex;
-wire writeScreen;
-
-cpu c(
-    clk,
-    flashReadAddr,
-    byteRead,
-    enableFlash,
-    flashDataReady,
-    led,
-    btn1Reg,
-    btn2Reg
-);
+    flashNavigator #(STARTUP_WAIT, MEMORY_LENGTH) externalFlash(
+        clk,
+        flashReadAddr,
+        enableFlash,
+        flashClk,
+        flashMiso,
+        flashMosi,
+        flashCs,
+        data,
+        dataReady
+    );
 
 
+    uart #(DELAY_FRAMES, MEMORY_LENGTH) dataSend(
+        clk,
+        data,
+        uart_tx,
+        dataReady
+    );
+
+ 
 endmodule
