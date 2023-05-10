@@ -1,19 +1,65 @@
 module cpu(
     input clk,
-    output reg[10:0] flashReadAddr = 0,
-    input [7:0] flashByteRead,
+    output reg[23:0] flashReadAddr = 0,
+    input [15:0] flashByteRead,
     output reg enableFlash,
     input flashDataReady,
-
     output reg [5:0] leds = 6'b111111,
-
-    output reg [7:0] cpuChar = 0,
-    output reg [5:0] cpuCharIndex = 0,
-    output reg writeScreen = 0,
-
+    output reg [100:0] uartData = 100'b0,
+    output reg writeUart = 0,
     input reset,
-    input btn
+    input btn1,
+    input btn2, 
+    input btn3,
+    input btn4,
 );
+
+reg [7:0] rect [11:0];
+reg [7:0] circle [9:0];
+reg [7:0] pixel [4:0];
+reg [7:0] number [3:0];
+initial begin
+    // defing rectangle
+    rect[0] = "r";
+    rect[1] = "e";
+    rect[2] = "c";
+    rect[3] = "t";
+    rect[4] = " ";
+    rect[5] = "x";
+    rect[6] = " ";
+    rect[7] = "y";
+    rect[8] = " ";
+    rect[9] = "w";
+    rect[10] = " ";
+    rect[11] = "h";
+
+    // defining circle
+    circle[0] = "c";
+    circle[1] = "i";
+    circle[2] = "r";
+    circle[3] = "c";
+    circle[4] = " ";
+    circle[5] = "x";
+    circle[6] = " ";
+    circle[7] = "y";
+    circle[8] = " ";
+    circle[9] = "r";
+
+    // pixel
+    pixel[0] = "p";
+    pixel[1] = " ";
+    pixel[2] = "x";
+    pixel[3] = " ";
+    pixel[4] = "y";
+
+    // number
+
+    number[0] = "n";
+    number[1] = " ";
+    number[2] = "0";
+    number[3] = "2";
+
+end
 
 localparam CMD_CLR = 0;
 localparam CMD_ADD = 1;
@@ -23,12 +69,17 @@ localparam CMD_PRNT = 4;
 localparam CMD_JMPZ = 5;
 localparam CMD_WAIT = 6;
 localparam CMD_HLT = 7;
+localparam CMD_SUB = 7;
+localparam CMD_RECT = 8;
+localparam CMD_CIRC = 9;
+localparam CMD_PIX = 10;
+localparam CMD_NUM = 11;
 
 
 reg [5:0] state = 0;
 reg [10:0] pc = 0;
-reg [7:0] a = 0, b = 0, c = 0, ac = 0;
-reg [7:0] param = 0, command = 0;
+reg [9:0] a = 0, b = 0, c = 0, ac = 0;
+reg [15:0] param = 0, command = 0;
 
 reg [15:0] waitCounter = 0;
 
@@ -63,7 +114,7 @@ always @(posedge clk) begin
         case(state)
         STATE_FETCH: begin
             if (~enableFlash) begin
-                flashReadAddr <= pc;
+                flashReadAddr <= {13'b0,pc};
                 enableFlash <= 1;
                 state <= STATE_FETCH_WAIT_START;
             end
@@ -82,7 +133,7 @@ always @(posedge clk) begin
         end
         STATE_DECODE: begin
             pc <= pc + 1;
-            if (command[7]) begin
+            if (command[15]) begin
                 state <= STATE_RETRIEVE:
             end else begin
                 param <= command[3] ? a : command[2] ? b : command[1] ? c : ac;
@@ -91,7 +142,7 @@ always @(posedge clk) begin
         end
         STATE_RETRIEVE: begin
             if (~enableFlash) begin
-                flashReadAddr <= pc;
+                flashReadAddr <= {13'b0,pc};
                 enableFlash <= 1;
                 state <= STATE_RETRIEVE_WAIT_START;
             end
@@ -111,16 +162,22 @@ always @(posedge clk) begin
         end
         STATE_EXECUTE: begin
             state <= STATE_FETCH
-            case (command[6:4])
+            case (command[14:9])
                 CMD_CLR: begin
                     if(command[0])
                         ac <= 0;
                     else if(command[1])
-                        ac <= btn ? 0 : (ac ? 1 : 0);
-                    else if(command[2])
                         b <= 0;
-                    else if (command[3])
+                    else if(command[2])
                         a <= 0;
+                    else if (command[3])
+                        ac <= btn1 ? 0 : (ac ? 1 : 0);
+                    else if (command[4])
+                        ac <= btn2 ? 0 : (ac ? 1 : 0);
+                    else if (command[5])
+                        ac <= btn3 ? 0 : (ac ? 1 : 0);
+                    else if (command[6])
+                        ac <= btn4 ? 0 : (ac ? 1 : 0);
                 end
                 CMD_ADD: begin
                     ac <= ac + param;

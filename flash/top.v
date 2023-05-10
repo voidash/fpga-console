@@ -11,35 +11,53 @@ module top #(
     input btn2,
 );
     
-    // 3.3v bank and 1.8v bank
-    reg btn1Reg = 1, btn2Reg = 1;
-    always @(negedge clk) begin
-        btn1Reg <= btn1 ? 1 : 0;
-        btn2Reg <= btn2 ? 1 : 0;
+    
+
+reg [23:0] flashReadAddr = 0;
+reg enableFlash = 1;
+    always @(posedge clk)
+    begin
+        if (counter == 32'd10000000)
+        begin
+            enableFlash <= 0;
+            counter <= 0;
+        end
+        else 
+            counter <= counter + 1;
     end
 
-    localparam MEMORY_LENGTH = 4;
+    always @(negedge btn1)
+    begin
+        flashReadAddr <= flashReadAddr + 1;
+        enableFlash <= 1;
+        counter <= 0;
+    end
+
+    localparam MEMORY_LENGTH = 1;
     localparam DELAY_FRAMES = 234;
-    wire [((MEMORY_LENGTH * 8) - 1):0] dataBuffer;
+
+    // the data that is read from the flash
+    wire [((MEMORY_LENGTH * 8) - 1):0] flashByte;
+    wire flashDataReady;
 
     flashNavigator #(STARTUP_WAIT, MEMORY_LENGTH) externalFlash(
         clk,
+        flashReadAddr,
+        enableFlash,
         flashClk,
         flashMiso,
         flashMosi,
         flashCs,
-        dataBuffer,
-        btn1Reg,
-        btn2Reg
+        flashByte,
+        flashDataReady
     );
 
 
     uart #(DELAY_FRAMES, MEMORY_LENGTH) dataSend(
         clk,
-        dataBuffer,
+        flashByte,
         uart_tx,
-        btn1
+        flashDataReady
     );
-
  
 endmodule

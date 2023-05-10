@@ -4,16 +4,16 @@ module flashNavigator
     parameter MEMORY_LENGTH = 4 
 ) (
     input clk,
+    input [23:0] readAddress,
+    input enable, 
     output reg flashClk = 0,
     input flashMiso,
     output reg flashMosi,
     output reg flashCs = 1,
     output reg [((MEMORY_LENGTH * 8)-1):0] dataBuffer = 0,
-    input btn1,
-    input btn2
+    output reg dataReady = 1
 );
     
-    reg [23:0] readAddress = 0;
     reg [7:0] command = 8'h03;
     reg [7:0] currentByteOut = 0;
     reg [7:0] currentByteNum = 0;
@@ -34,20 +34,21 @@ module flashNavigator
     reg [2:0] state = 0;
     reg [2:0] returnState = 0;
 
-    reg dataReady = 0;
 
       always @(posedge clk) begin
       case (state)
   	    STATE_INIT_POWER: begin
-            if (counter > STARTUP_WAIT) begin
+            if (counter < STARTUP_WAIT) begin
+                counter <= counter + 1;
+            end
+            else if(enable == 1)
+            begin
                 state <= STATE_LOAD_CMD_TO_SEND;
                 counter <= 32'b0;
-                dataReady <= 0;
+                dataReady <= 1;
                 currentByteNum <= 0;
                 currentByteOut <= 0;
             end
-            else
-                counter <= counter + 1;
             end
         STATE_LOAD_CMD_TO_SEND: begin
             flashCs <= 0;
@@ -106,14 +107,11 @@ module flashNavigator
         end
 
         STATE_DONE: begin
-            dataReady <= 1;
+            dataReady <= 0;
             flashCs <= 1;
             dataBuffer <= dataIn;
             counter <= STARTUP_WAIT;
-            if (btn2 == 0) begin
-                readAddress <= readAddress + 1;
-                state <= STATE_INIT_POWER;
-            end
+            state <= STATE_INIT_POWER;
         end
 
 

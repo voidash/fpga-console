@@ -16,7 +16,5 @@ tangnano.on('data', function(data) {
         return byte.charCodeAt(0).toString(2).padStart(8, '0');
     });
     console.log('Data In Binary: ', binary.join(' '));
-    console.log("\n");
-    counter += 1;
-    tangnano.write(Buffer.from([counter]));
+    console.log('Data  : ', data);
 })

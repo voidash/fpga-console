@@ -9,11 +9,18 @@ module top #(
     output uart_tx,
     input btn1,
     input btn2,
+    output [5:0] leds
 );
     
     
 
-reg [23:0] flashReadAddr = 1;
+reg btn1Reg = 1, btn2Reg = 1;
+always @(negedge clk) begin
+    btn1Reg <= btn1 ? 0 : 1;
+    btn2Reg <= btn2 ? 0 : 1;
+end
+
+reg [23:0] flashReadAddr = 0;
 reg enableFlash = 1;
     always @(posedge clk)
     begin
@@ -33,19 +40,10 @@ reg enableFlash = 1;
         counter <= 0;
     end
 
-    // always @(negedge btn2)
-    // begin
-    //     if(flashReadAddr > 0)
-    //     begin
-    //         flashReadAddr <= flashReadAddr - 1;
-    //         enableFlash <= 1;
-    //         counter <= 0;
-    //     end
-    // end
-    localparam MEMORY_LENGTH = 1;
+    localparam MEMORY_LENGTH = 2;
     localparam DELAY_FRAMES = 234;
-    wire [((MEMORY_LENGTH * 8) - 1):0] data;
-    wire dataReady;
+    wire [((MEMORY_LENGTH * 8) - 1):0] flashByteRead;
+    wire flashDataReady;
 
     flashNavigator #(STARTUP_WAIT, MEMORY_LENGTH) externalFlash(
         clk,
@@ -55,16 +53,33 @@ reg enableFlash = 1;
         flashMiso,
         flashMosi,
         flashCs,
-        data,
-        dataReady
+        flashByteRead,
+        flashDataReady
     );
+
 
 
     uart #(DELAY_FRAMES, MEMORY_LENGTH) dataSend(
         clk,
-        data,
+        flashByteRead,
         uart_tx,
-        dataReady
+        flashDataReady,
+    );
+
+    wire writeUart;
+    reg reset = 0;
+    wire[100:0] uartData;
+
+    cpu c(
+        clk,
+        flashReadAddr,
+        flashByteRead,
+        enableFlash,
+        flashDataReady,
+        leds,
+        uartData,
+        writeUart,
+        reset,
     );
 
  

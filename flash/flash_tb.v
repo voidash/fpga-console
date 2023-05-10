@@ -10,21 +10,23 @@ reg [((MEMORY_LENGTH * 8) -1): 0] data = "hello";
 wire flashClk;
 reg flashMiso;
 wire flashCs;
+reg [23:0] readAddress = 23'b0;
 wire [((MEMORY_LENGTH * 8) -1): 0] dataBuffer;
-reg btn1 = 1;
-reg btn2 = 1;
+reg enable = 1 ;
+wire dataReady;
 
-
-flashNavigator #(10,MEMORY_LENGTH)
-UUT( clk,
+flashNavigator #(10,MEMORY_LENGTH) UUT(
+    clk,
+    readAddress,
+    enable,
     flashClk,
     flashMiso,
     flashMosi,
     flashCs,
     dataBuffer,
-    btn1,
-    btn2
+    dataReady
 );
+
 integer i;
 initial begin
     $display("starting flash test");

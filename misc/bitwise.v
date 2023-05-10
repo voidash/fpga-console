@@ -28,8 +28,10 @@ initial
         $display( "XOR of 1 and 0 is %b", w_XOR_SCALAR );
         $display( "testing %b", test[12-:8]);
         $display( "testing %b", test[12:3]);
-        $display( "testing %b", test[0+:4]);
         $display( "testing stuff %b", test[12:0]);
+        $display( "testing %b", test[(0 << 2)+:4]);
+        $display( "testing %b", test[(1 << 2)+:4]);
+        $display( "testing %b", test[(2 << 2)+:4]);
         $display( "NOT of 1 is %b", w_NOT_SCALAR );
         #10;
         $display( "AND of 1 and 0 is %b", w_AND_VECTOR );

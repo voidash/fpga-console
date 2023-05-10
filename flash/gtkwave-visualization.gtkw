@@ -1,0 +1,43 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Mon May  8 03:02:21 2023
+[*]
+[dumpfile] "/home/cdjk/github/verilog/flash/flash.vcd"
+[dumpfile_mtime] "Mon May  8 03:01:20 2023"
+[dumpfile_size] 15918
+[savefile] "/home/cdjk/github/verilog/flash/gtkwave-visualization.gtkw"
+[timestart] 100
+[size] 950 999
+[pos] -1 -1
+*-6.600000 116 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] flashtb.
+[sst_width] 276
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 297
+@28
+flashtb.clk
+flashtb.flashCs
+flashtb.flashMiso
+flashtb.flashMosi
+@22
+[color] 1
+flashtb.UUT.state[2:0]
+@24
+[color] 3
+flashtb.UUT.bitsToSend[8:0]
+@28
+flashtb.UUT.dataReady
+@22
+flashtb.UUT.dataToSend[23:0]
+flashtb.UUT.counter[32:0]
+@28
+flashtb.UUT.flashClk
+@821
+flashtb.data[39:0]
+@28
+flashtb.UUT.currentByteOut[7:0]
+@22
+flashtb.UUT.dataIn[39:0]
+[pattern_trace] 1
+[pattern_trace] 0
