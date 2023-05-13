@@ -4,6 +4,7 @@
 \usepackage{hyperref}
 \usepackage{multibib}
 \usepackage{fancyhdr}
+\usepackage{listings}
 \usepackage{float}
 
 \usepackage{tikz}
@@ -201,8 +202,7 @@
     \subsubsection{FPGA-CHIP8} 
     CHIP-8 is a virtual machine with an interpreted environment widely used in the 1970s.
     FPGA-CHIP8 implements CHIP-8 specification for TinyFPGA BX board. Other hardware components are a 16-button keyboard and 128x64px monochrome OLED screen
-    \newpage
-    \begin{figure}[h]
+    \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{images/chip8-fpga.png} 
     \caption{FPGA-CHIP8 running Space invaders}
@@ -221,18 +221,220 @@
 
     \subsubsection{Learning oss-cad-suite}
     OSS CAD Suite is distribution for open source software used in digital logic design.
-    There are tools for RTL synthesis, hardware verification, place and route and support for Hardware Definition Language(HDL) like Verilog. HDLBits is collection of verilog exercises suited for learning Verilog. \url{https://hdlbits.01xz.net/wiki/Special:VlgStats/216F4A6FBFA9331} contains the list of solved problems. 
+    There are tools for RTL synthesis, hardware verification, place and route and support for Hardware Definition Language(HDL) like Verilog. HDLBits is collection of verilog exercises suited for learning Verilog. \url{https://hdlbits.01xz.net/wiki/Special:VlgStats/216F4A6FBFA9331} contains the list of solved problems. \textit{Yosys} is the synthesis tool which converts the high level description of design into optimized gate-level netlist. Netlist is list of electric component in a circuit and a list of nodes they are connected to.
+    
+    \textit{Nextpnr-gowin} is used for place and route. Place and route is the stage of FPGA which takes a \textit{constraint} file and the synthesized file and then decides where to place and route them according to FPGA type. Constraint files are special files which defines the relation between the pins and module input and output variables and then decides where to place and how to route them. \textit{gowin\_pack} is used for Bitstream generation. \textit{OpenFPGALoader} is used to load burn the generated bitstream into the FPGA .
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth]{./images/oss-process.jpeg}
+        \caption{Process of loading HDL Code to FPGA using OSS tools}
+    \end{figure}
 
-    \subsubsection{Learning Communication Interfaces}
+    \subsubsection{Learning Communication Interfaces and Protocols}
+    Communication interfaces defines the set of protocols, and communication channels that allows devices to exchange data or signals with each other. 
+
     \paragraph{Interfacing with flash memory with SPI interface}
-    \paragraph{Interfacing with Screen using UART interface}
-    \subsubsection{Building the CPU}
-    \subsubsection{Writing Assembly Code for Games}
+    
+    The flash chip used by the FPGA is \textit{P25Q32U} which uses SPI protocol. Serial Peripheral Interface(SPI) is synchronous serial communication interface commonly used for short-distance communication. There are four lines \textit{SCK} ,\textit{Master Out Slave In(MOSI)},\textit{Master In Slave Out(MISO)} and \textit{ChipSelect(CS)}. 
 
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth]{./images/spi_flash.png}
+        \caption{SPI Read Sequence Timing Diagram for Tang Nano 9k}
+    \end{figure}
+
+    Using verilog, SPI state machine was created. There needs to be certain delay time to accomodate for the speed difference between FPGA and the chip itself. The The states are shown by \textit{figure 6}. Each node has \textit{$input/output$} representation. Input section defines the path to take, i.e if past output was 0 then current node will take the path that has \textit{$0/X$} as the input. 
+
+     \begin{figure}[h!]
+    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,auto]
+    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+
+    \node[state]   (init)                      {$initialize$};
+    \node[state] (loadcmd) [below left of=init]  {$load\ command$};
+    \node[state]           (send) [right of=loadcmd]     {$send$};
+    \node[state] (loadaddr) [below right of=send] {$load\ address$};
+    \node[state]           (read) [below left of=send]     {$read$};
+    \node[state]           (done) [below of=read]     {$done$};
+
+    \path[->]
+    (init) edge [bend right] node {$0/0$} (loadcmd)
+    (loadcmd) edge node {$0/0$} (send)
+    (send) edge [bend left] node {$0/0$} (loadaddr)
+    (loadaddr) edge [bend left] node {$0/1$} (send)
+    (send) edge [bend right] node {$1/0$} (read)
+    (read) edge node {$0/0$} (done);
+    \end{tikzpicture}
+    \caption{State diagram for SPI Flash Protocol}
+    \end{figure}
+
+
+    \paragraph{Interfacing with Screen using UART interface} 
+
+    \phantom{text}
+
+    Universal Asynchronous Receiver/Transmitter allows two devices to communicate using serial Data. It is simple protocol and works by sending one bit of data at a time. Baud rate must be same on both transmitting and receiving devices. The first bit or start bit tells the receiver that the data is coming and then the last bit is stop bit which tells the data has stopped.
+
+
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=1\textwidth ]{./images/uart_timing.png}
+        \caption{UART Transmit Timing Diagram}
+    \end{figure}
+
+    \begin{figure}[H]
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,auto]
+
+    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+
+    \node[state]   (idle)                      {$idle$};
+    \node[state] (startbit) [below left of=idle]  {$start\_bit$};
+    \node[state]           (write) [right of=startbit]     {$write$};
+    \node[state] (stop) [below right of=write] {$stop\_bit$};
+    \node[state]           (debounce) [below left of=stop]     {$debounce$};
+
+    \path[->]
+    (idle) edge [bend right] node {} (startbit)
+    (startbit) edge node {} (write)
+    (write) edge [bend left] node {} (stop)
+    (stop) edge [bend left] node {$all\ bytes\ not\ transferred$} (startbit)
+    (stop) edge [bend left] node {$all\  bytes\ transferred$} (debounce);
+    \end{tikzpicture}
+    \caption{State diagram for UART Transfer Protocol} 
+    \end{figure}
+
+    UART was used for communication between Screen interface and FPGA. The screen interface contained  ESP8266 Microcontroller and a 128x32 OLED screen. 115200 was set as the baud rate between both microcontroller and FPGA.The message passed by the FPGA to screen interface is present on  \textit{Table 1} 
+
+    \begin{table}[H]
+        \footnotesize
+        \setlength{\tabcolsep}{0.3em} % for the horizontal padding
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{UART Message}  & \textbf{Description} \\ \hline
+            RECT X Y W H & build the rectangle of width W and height H on X and Y position. \\ \hline
+            CIRC X Y R& build the circle of Radius R on X and Y position. \\ \hline
+            PIX X Y & build the pixel on position X and Y\\ \hline
+            TEXT value & Show the pixel on screen \\ \hline
+            CLEAR & Clear everything on screen \\ \hline
+        \end{tabular}
+        \caption{UART Message sent from FPGA to Screen Interface}
+    \end{table}
 
     \newpage
 
-    \begin{table}[H]
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.3\textwidth ]{./images/uart_image.jpg}
+        \caption{Screen rendering rectangle and circle element with basic screen commands }
+    \end{figure}
+
+    \subsubsection{Building the CPU}
+    Building the CPU with custom instruction set architecture requires several key steps. First the requirements of the intended CPU was laid out. The required commands were finalized. According to commands, instruction set architecture was built. Discussed Instruction Set Architecture(ISA) defines 
+    \begin{itemize}
+        \item \textbf{Instruction Set} 
+
+        16 Bits of word size was chosen because around 12 instructions was planned. 5 Bits out of total word size can represent all the commands as $2^5 = 32 > 12$. Other 20 bits are reserved to add other cruicial features that will support procedures, label jumping etc. The first bit is \textit{Command Modifier}($CM$) bit which signifies either the addressing mode is intermediate or not. Rest of the bits are \textit{variation} bits which either has the constant data attached to it, or signifies the variation . \textit{Table} shows how variation, commands and CM are used for Add command. 
+
+        \begin{figure}[h]
+            \centering
+            \setlength{\unitlength}{0.7cm}
+            \begin{picture}(16,1)
+            \multiput(0,0)(0,1){2}{\line(1,0){16}}
+            \multiput(0,0)(1,0){17}{\line(0,1){1}}
+            \put(0,-1){\line(1,0){1}}
+            \put(0,-1){\line(0,1){1}}
+            \put(0,-0.7){$CM$}
+            \put(1,-1){\line(0,1){1}}
+            
+            \put(1,-1){\line(1,0){5}}
+            \put(1,-1){\line(0,1){1}}
+            \put(1.2,-0.7){$COMMAND$}
+            \put(6,-1){\line(0,1){1}}
+            
+            \put(6,-1){\line(1,0){10}}
+            \put(6,-1){\line(0,1){1}}
+            \put(6.2,-0.7){$VARIATION$}
+            \put(16,-1){\line(0,1){1}}
+            \end{picture}
+            \vspace{0.4cm}
+            \caption{Layout for the 16 bit Computer Word}
+        \end{figure}
+
+        \begin{table}[H]
+           \footnotesize
+           \setlength{\tabcolsep}{0.3em} % for the horizontal padding
+           \renewcommand{\arraystretch}{1.6}
+           \centering
+           \begin{tabular}{|l|l|l|l|l|}
+            \hline
+            \textbf{Instruction} & \textbf{CM} & \textbf{COMMAND}  & \textbf{VARIATION} & \textbf{Description}\\ \hline
+            ADD A & 0 & 00101 & 1000000000 & Add A to accumulator\\ \hline
+            ADD B & 0 & 00101 & 0100000000 & Add B to accumulator\\ \hline
+            ADD C & 0 & 00101 & 0100000000 & Add B to accumulator\\ \hline
+            ADD 30 & 1 & 00101 & 000000001 & Immediate Add\\ \hline
+           \end{tabular} 
+           \caption{Instruction bits for Add Commands}
+        \end{table}
+        \newpage
+        \item \textbf{Register set} 
+        
+         There are 5 main registers A, B ,C , Accumulator(AC) and Program Counter(PC). Initially Registers hold 0. 
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.3\textwidth ]{./images/registers.png}
+            \caption{Registers}
+        \end{figure}
+    \end{itemize}
+
+    Other essential features of the CPU are Control Unit, Arithmetic Logical Unit and other I/O devices. 
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth ]{./images/architecture.png}
+        \caption{Architecture of the CPU}
+    \end{figure}
+
+    Input Unit is constantly monitored on each clock cycle. Interrupts are not implemented to CPU polls for each input device. Screen Unit and CPU are connected with each other through the UART protocol. The functionality of control Unit state machine is shown in the \textit{Figure 13}. 
+
+    \begin{figure}[H]
+    \begin{tikzpicture}[shorten >=1pt,node distance=4cm,auto]
+    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+
+    \node[state]   (fetch)                      {$fetch$};
+    \node[state] (fwait) [right of=fetch]  {$fetch\_wait$};
+    \node[state]           (fdone) [right of=fwait]     {$fetch\_done$};
+    \node[state] (decode) [below right of=fdone] {$decode$};
+    \node[state]           (retreive) [left of=decode]     {$retreive$};
+    \node[state]           (rwait) [left of=retreive]     {$retreive\_wait$};
+    \node[state]           (rdone) [below of=rwait]     {$retreive\_done$};
+    \node[state]           (execute) [below of=rdone]     {$execute$};
+    \node[state]           (print) [below left of=execute]     {$print$};
+    \node[state]           (wait) [below right of=execute]     {$wait$};
+    \node[state]           (halt) [below of=execute]     {$halt$};
+    \path[->]
+    (fetch) edge  node {} (fwait)
+    (fwait) edge  node {} (fdone)
+    (fdone)  edge [bend left]  node {} (decode)
+    (decode) edge  node {$immediate$}  (retreive)
+    (decode) edge [bend left] node [sloped] {$non\ immediate$} (execute)
+    (retreive) edge node {} (rwait)
+    (rwait) edge  node {} (rdone)
+    (rdone) edge  node {} (execute)
+    (execute) edge [bend right]  node [sloped] {$write\_uart$} (print)
+    (execute) edge [bend left]  node [sloped] {$delay$} (wait)
+    (print) edge [bend right]  node [sloped] {$uart\_ready$} (execute)
+    (wait) edge [bend left]  node[sloped] {$elapsed$} (execute)
+    (execute) edge node {} (halt)
+    (execute) edge [bend left] node {} (fetch);
+    \end{tikzpicture}
+    \caption{State diagram for CPU}
+    \end{figure}
+
+    CPU has total of 11 states in total. First state starts with a fetch. Other two fetch states fetch\_wait and fetch\_done are required because, reading from flash is not instantenous. The time where flash is being read represents wait time for flash and after data is read, flash has to send \textit{dataReady} signal which represents fetch\_done. Decode divides the command into \textit{CM}, \textit{COMMAND} and \textit{VARIATION} bits and checks if the instruction is immediate. If it is immediate then another 16 bit value has to be retreived which follows the same process as fetch, then it gets to execution stage. according to the instruction, it can either print, or wait, then it again goes to fetch stage.
+
+    \begin{table}[h]
     \footnotesize
     \centering
     \setlength{\tabcolsep}{0.5em} % for the horizontal padding
@@ -290,128 +492,79 @@
     \caption{Instruction set Architecture}
     \end{table}
 
-    \newpage
 
-    Instruction set architecture defines 
-    \begin{itemize}
-        \item instruction set: the function of each instruction
-        \item Register set : how many registers there are , size of registers, functions and its initial state
-        \item Exception Model: What are the different level of privilege 
-        \item Memory Model 
-    \end{itemize}
-    \newpage
-    \subsection{Diagrams}
-    
-    \begin{figure}[h]
-    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,auto]
-    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
 
-    \node[state]   (idle)                      {$idle$};
-    \node[state] (startbit) [below left of=idle]  {$start\_bit$};
-    \node[state]           (write) [right of=startbit]     {$write$};
-    \node[state] (stop) [below right of=write] {$stop\_bit$};
-    \node[state]           (debounce) [below left of=stop]     {$debounce$};
+    \subsubsection{Writing Assembler and Assembly code}
 
-    \path[->]
-    (idle) edge [bend right] node {} (startbit)
-    (startbit) edge node {} (write)
-    (write) edge [bend left] node {} (stop)
-    (stop) edge [bend left] node {$all\ bytes\ not\ transferred$} (startbit)
-    (stop) edge [bend left] node {$all\  bytes\ transferred$} (debounce);
-    \end{tikzpicture}
-    \caption{State diagram for UART Protocol} 
-    \end{figure}
-% SPI
-    \begin{figure}[h!]
-    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,auto]
-    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+    An assembler is a program that translates assembly language code into machine code. \textit{Table 3} contains all the possible instruction and its equivalent binary equivalent with description, which the assembler has to conver. Assembler was written in Rust which expects the filename as an argument. Each character is pushed to a dynamic array. It is then fed to the mattern matching function of rust which returns the binary executable for the CPU.
 
-    \node[state]   (init)                      {$initialize$};
-    \node[state] (loadcmd) [below left of=init]  {$load\ command$};
-    \node[state]           (send) [right of=loadcmd]     {$send$};
-    \node[state] (loadaddr) [below right of=send] {$load\ address$};
-    \node[state]           (read) [below left of=send]     {$read$};
-    \node[state]           (done) [below of=read]     {$done$};
-
-    \path[->]
-    (init) edge [bend right] node {$0/0$} (loadcmd)
-    (loadcmd) edge node {$0/0$} (send)
-    (send) edge [bend left] node {$0/0$} (loadaddr)
-    (loadaddr) edge [bend left] node {$0/1$} (send)
-    (send) edge [bend right] node {$1/0$} (read)
-    (read) edge node {$0/0$} (done);
-    \end{tikzpicture}
-    \caption{State diagram for SPI Flash Protocol}
-    \end{figure}
-
-    \newpage
-
-        % CPU
     \begin{figure}[H]
-    \begin{tikzpicture}[shorten >=1pt,node distance=5cm,auto]
-    \tikzstyle{every state}=[fill={rgb:black,1;white,10}]
-
-    \node[state]   (fetch)                      {$fetch$};
-    \node[state] (fwait) [right of=fetch]  {$fetch\_wait$};
-    \node[state]           (fdone) [right of=fwait]     {$fetch\_done$};
-    \node[state] (decode) [below right of=fdone] {$decode$};
-    \node[state]           (retreive) [left of=decode]     {$retreive$};
-    \node[state]           (rwait) [left of=retreive]     {$retreive\_wait$};
-    \node[state]           (rdone) [below of=rwait]     {$retreive\_done$};
-    \node[state]           (execute) [below of=rdone]     {$execute$};
-    \node[state]           (print) [below left of=execute]     {$print$};
-    \node[state]           (wait) [below right of=execute]     {$wait$};
-    \node[state]           (halt) [below of=execute]     {$halt$};
-    \path[->]
-    (fetch) edge  node {} (fwait)
-    (fwait) edge  node {} (fdone)
-    (fdone)  edge [bend left]  node {} (decode)
-    (decode) edge  node {$immediate$}  (retreive)
-    (decode) edge [bend left] node [sloped] {$non\ immediate$} (execute)
-    (retreive) edge node {} (rwait)
-    (rwait) edge  node {} (rdone)
-    (rdone) edge  node {} (execute)
-    (execute) edge [bend right]  node [sloped] {$write\_uart$} (print)
-    (execute) edge [bend left]  node [sloped] {$delay$} (wait)
-    (print) edge [bend right]  node [sloped] {$uart\_ready$} (execute)
-    (wait) edge [bend left]  node[sloped] {$elapsed$} (execute)
-    (execute) edge node {} (halt)
-    (execute) edge [bend left] node {} (fetch);
-    \end{tikzpicture}
-    \caption{State diagram for CPU}
+    \centering
+    \lstinputlisting{pong.as}
+    \caption{Pong Game Assembly Code Snippet}
     \end{figure}
 
-    \begin{figure}[h]
-    \setlength{\unitlength}{0.8cm}
-    \begin{picture}(16,1)
-    \multiput(0,0)(0,1){2}{\line(1,0){16}}
-    \multiput(0,0)(1,0){17}{\line(0,1){1}}
-    \put(0,-1){\line(1,0){1}}
-    \put(0,-1){\line(0,1){1}}
-    \put(0.1,-0.7){$CM$}
-    \put(1,-1){\line(0,1){1}}
-    
-    \put(1,-1){\line(1,0){5}}
-    \put(1,-1){\line(0,1){1}}
-    \put(1.2,-0.7){$COMMANDS$}
-    \put(6,-1){\line(0,1){1}}
-    
-    \put(6,-1){\line(1,0){10}}
-    \put(6,-1){\line(0,1){1}}
-    \put(6.2,-0.7){$VARIATION$}
-    \put(16,-1){\line(0,1){1}}
-    \end{picture}
-    \vspace{0.4cm}
-    \caption{ISA}
-    \end{figure}
-
+    \newpage
     \subsection{System Requirement Specification}
     \subsubsection{Software specification}
-    \paragraph{Verilog}
+    \paragraph{Verilog} 
+    FPGA was programmed using Verilog HDL. It compiles the code and provides a executable which can be simulated. During simulation we can configure it so that Value Change Dump(VCD) files can also be produced.
+    \paragraph{GtkWave}
+    GTKWave reads the VCD files, then allows us to inspect the timing variables, which is useful for testing the usability of verilog modules.
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth ]{./images/gtkwave.png}
+        \caption{Gtkwave Timing Diagram for SPI Flash}
+    \end{figure}
     \paragraph{Yosys}
-    \paragraph{gowith-pnr}
+    Yosys is framework which synthesizes the verilog code and produces a netlist. A netlist is a file that contains the interconnections between various electric components of a circuit. So verilog code is described in digital logic form.
+    \paragraph{gowitn-pnr}
+    A constraint file or CST file maps the verilog variables with real pins present in FPGA. Gowin-pnr takes the constraint file then performs place and route which is suitable for Gowin FPGA.    
+     \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\textwidth ]{./images/constraint.png}
+        \caption{Constraint mapping between verilog variables and the corresponding pin location}
+    \end{figure}
+
+    \paragraph{gowin\_pack}
+    gowin-pack reads the output of gowin-pnr and then produces the bitstream file that is suitable to be uploaded into fpga.
+
+    \paragraph{OpenFPGALoader}
+    OpenFPGALoader is a tool to write the bitstream file into FPGA.
+
+    \paragraph{Rust Toolchain}
+    Rust is a memory safe, blazing fast language which was used to create the assembler.
+
+    \paragraph{Espflash}
+    Espflash is a tool used to flash ESP microcontroller. It was used to flash screen interface code into esp8266 microcontroller.
+
     \subsubsection{Hardware specification}
 
+    \paragraph{Tang Nano 9k}
+    It is open source FPGA board based on Gowin GW1NR-9 FPGA chip. It has 9k logic units, HDMI connector, SPI screen connector, SPI flash and 6 LEDs.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics{./images/fpga.jpg}
+        \caption{Tang Nano 9k}
+    \end{figure}
+
+    \paragraph{NodeMCU}
+    It is also opensource micrcontroller board which is based on ESP8266 chip. For this project the features that were important are USB-to-UART converter and GPIO UART.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth ]{./images/nodemcu.jpg}
+        \caption{Esp8266 Micocontroller}
+    \end{figure}
+
+    \paragraph{SSD1306 OLED Screen}
+    It is low power consuming 128x32 pixel OLED display controller. 
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\textwidth ]{./images/ssd1306.jpg}
+        \caption{OLED Screen}
+    \end{figure}
     \newpage
     \section{Discussion on Achievements}
 

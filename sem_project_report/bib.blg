@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bib.aux
+The style file: plain.bst
+Database file #1: Bibliography.bib
+Warning--I didn't find a database entry for ""
+Warning--I didn't find a database entry for "Herlocker:2004"
+Warning--I didn't find a database entry for "HuLiu:2004"
+You've used 1 entry,
+            2118 wiz_defined-function locations,
+            506 strings with 4126 characters,
+and the built_in function-call counts, 219 in all, are:
+= -- 17
+> -- 7
+< -- 0
++ -- 3
+- -- 2
+* -- 10
+:= -- 41
+add.period$ -- 2
+call.type$ -- 1
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 1
+duplicate$ -- 7
+empty$ -- 23
+format.name$ -- 2
+if$ -- 44
+int.to.chr$ -- 0
+int.to.str$ -- 1
+missing$ -- 0
+newline$ -- 7
+num.names$ -- 2
+pop$ -- 9
+preamble$ -- 1
+purify$ -- 3
+quote$ -- 0
+skip$ -- 8
+stack$ -- 0
+substring$ -- 5
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 4
+warning$ -- 0
+while$ -- 2
+width$ -- 2
+write$ -- 10
+(There were 3 warnings)

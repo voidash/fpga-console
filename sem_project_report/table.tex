@@ -1,0 +1,58 @@
+\documentclass[a4paper]{article}
+\begin{document}
+
+Hello
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|l|l|l|p{6cm}|}
+\hline
+\textbf{Command} & constant & opcode & variation & description \\ \hline
+CLEAR A & 0 & 00000 & 1000000000 & clear A Register \\ \hline
+CLEAR B & 0 & 00000 & 0100000000 & clear B Register\\ \hline
+CLEAR AC & 0 & 00000 & 0010000000 & clear AC Register\\ \hline
+CLEAR BTN1 & 0 & 00001 & 1000000000 & clear AC if btn1 pressed\\ \hline
+CLEAR BTN2 & 0 & 00001 & 0100000000 & clear AC if btn2 pressed\\ \hline
+CLEAR BTN3 & 0 & 00001 & 0010000000 & clear AC if btn3 pressed\\ \hline
+CLEAR BTN4 & 0 & 00001 & 0001000000 & clear AC if btn4 pressed\\ \hline
+STA A & 0 & 00010 & 1000000000 & store AC in A register\\ \hline
+STA B & 0 & 00010 & 0100000000 & store AC in B register\\ \hline
+STA C & 0 & 00010 & 0010000000 & store AC in C register\\ \hline
+STA LED & 0 & 00010 & 0001000000 & set first 6 bits of AC register to LED output\\ \hline
+INV A & 0 & 00011 & 1000000000 & invert A register\\ \hline
+INV B & 0 & 00011 & 0100000000 & invert B register\\ \hline
+INV C & 0 & 00011 & 0010000000 & invert C register\\ \hline
+INV AC & 0 & 00011 & 0001000000 & invert AC register\\ \hline
+HLT & 0 & 00100 & 0000000000 & halt\\ \hline
+ADD A & 0 & 00101 & 1000000000 & Add A to AC register\\ \hline
+ADD B & 0 & 00101 & 0100000000 & Add B to AC register\\ \hline
+ADD C & 0 & 00101 & 0010000000 & Add C to AC register\\ \hline
+ADD 20 & 1 & 00101 & 0000000001 & Immediate Add \\ 
+&  &  & value  & \\ \hline
+SUB A & 0 & 00110 & 1000000000 & Sub A and AC register\\ \hline
+SUB B & 0 & 00110 & 0100000000 & Sub B and AC register\\ \hline
+SUB C & 0 & 00110 & 0010000000 & Sub C and AC register\\ \hline
+SUB 20 & 1 & 00110 & 0000001010 & Immediate Subtract\\ 
+&  &  & value  & \\ \hline
+PRNT A & 0 & 00111 & 1000000000 & Print A reg to OLED \\ \hline
+PRNT B & 0 & 00111 & 0100000000 & Print B reg to OLED \\ \hline
+PRNT C & 0 & 00111 & 0010000000 & Print C reg to OLED\\ \hline
+PRNT 110 & 1 & 00111 & 0110110110 & Immediate Print value to OLED\\ \hline
+RECT X Y W H & 0 & 01000 & XXXXXYYYYY & Draw rect of in pos x and y of size w and h\\ 
+& 0 & 00000 & WWWWWHHHHH &\\ \hline 
+CIRC X Y R & 0 & 01001 & XXXXXYYYYY & Draw Circle of radius R in position X and Y\\ 
+& 0 & 00000 & 00000RRRRR & \\ \hline
+PIX X Y & 0 & 01010 & XXXXXYYYYY & Draw pixel in X and Y position\\ \hline
+JMPZ A & 0 & 01100 & 1000000000 & Jump to A Register position if AC = 0\\ \hline
+JMPZ B & 0 & 01100 & 0100000000 & Jump to B Register position if AC = 0\\ \hline
+JMPZ C & 0 & 01100 & 0010000000 & Jump to C Register position if AC = 0\\ \hline
+JMPZ 20 & 1 & 01100 & 0000000001 & Immedate jump \\ 
+&  &  & value  & \\ \hline
+WAIT A & 0 & 01101 & 1000000000 & Wait for amount of seconds as specified by A register\\ \hline
+WAIT B & 0 & 01101 & 0100000000 &  Wait for amount of seconds as specified by B register\\ \hline
+WAIT C & 0 & 01101 & 0010000000 &  Wait for amount of seconds as specified by C register\\ \hline
+WAIT 20 & 0 & 01101 & 0000000001 &  Immediate Wait for amount of seconds \\ 
+&  &  & value  & \\ \hline
+\end{tabular}
+\caption{Instruction set Architecture}
+\end{table}
+\end{document}
