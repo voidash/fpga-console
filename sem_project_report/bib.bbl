@@ -1,7 +1,21 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{}
 
-\bibitem{arvindpdmn_risc-v_2018}
-hemanthSK arvindpdmn.
-\newblock {RISC}-{V} {Instruction} {Sets}, August 2018.
+\bibitem[arvindpdmn, 2018]{arvindpdmn_risc-v_2018}
+arvindpdmn, h. (2018).
+\newblock {RISC}-{V} {Instruction} {Sets}.
+
+\bibitem[{MAXIMO H. SALINAS} et~al., 1993]{maximo_h._salinas_implementation_1993}
+{MAXIMO H. SALINAS}, {BARRY W. JOHNSON}, and {JAMES H. AYLER} (1993).
+\newblock Implementation {Independedt} {Model} of an instruction set architecture in {VHDL}.
+\newblock IEEE.
+
+\bibitem[Patterson and Berkeley, 2018]{patterson_50_2018}
+Patterson, D. and Berkeley, UC, G. (2018).
+\newblock 50 {Years} of computer architecture: {From} the mainframe {CPU} to the domain-specific tpu and the open {RISC}-{V} instruction set.
+\newblock IEEE.
+
+\bibitem[Waterman et~al., ]{waterman_specifications_nodate}
+Waterman, A., Patterson, D., and Asanovic, K.
+\newblock Specifications – {RISC}-{V} {International}.
 
 \end{thebibliography}

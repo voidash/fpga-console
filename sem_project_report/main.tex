@@ -23,6 +23,8 @@
 
 \pagestyle{fancy}
 \begin{document}
+\nociteref{*}
+\nocitebib{*}
 \setcounter{secnumdepth}{4} %so that we get subsubsubsection
 \setcounter{tocdepth}{4} %so that subsubsubsection get's shown on Table of contents
 
@@ -182,7 +184,8 @@
      architecture is owned by Softbank group. First arm processor called ARM1 was developed by Acord computer in Britain for BBC. The architecture state for the ARM processor consists of 16 \textit{32-bit} registers and the status register. In 1995 it introduced the \textit{16-bit} thumb instruction set which makes the code size small but are less powerful.Later enhancement has added digital signal processing (DSP), optional floating point instructions, power saving and Single instruction Multiple data (SIMD) instructions. ARMv8 introduced a completely new 64-bit architecture. 
 
     \subparagraph{Google TPU}
-    can run \textit{Deep Neural Network} interface 15-to-30 times faster  than contemporary CPU and GPU. \citebib{}. It can achieve such performance because
+    can run \textit{Deep Neural Network} interface 15-to-30 times faster  than contemporary CPU and GPU. %\citebib{}. 
+    It can achieve such performance because
     \begin{itemize}
         \item it has large 2-dimensional multiply units compared to contemporary CPU which has 13 to 18 times smaller multiply units.
         \item it uses domain specific architecture (DSA) specifically created to decrease the cost and increase the performance. 
@@ -568,20 +571,67 @@
     \newpage
     \section{Discussion on Achievements}
 
+    Custom Instruction set Architecture was implemented and the functional game console was created using FPGA technology. The project also gave hands-on-experience with embedded systems. Core communication protocols like UART, SPI and I2C were also explored. Rigorous testing was done in order to find the errors on simulation phase. This project demonstrates the ability to program FPGA using open source digial design tools like Verilog, yosys, gowin-pnr etc. Other achievements include Reading Datasheets, writing simulation tests and interfacing with the device . 
+
+    \subsection{Features}
+    Some Significant features of the project are listed below
+
+    \begin{itemize}
+        \item \textbf{Custom CPU}
+        \begin{itemize}
+            \item RISC style CPU  
+            \item 16 Bit word length 
+            \item Supports up to 32 instructions
+            \item Two addressing modes supported  
+            \item 3 usable Registers: A, B, C
+            \item 2 internal Registers : PC and AC  
+        \end{itemize}
+        \item \textbf{External Memory} P25Q32U is SPI supporting memory chip which is in built into FPGA itself. To load the program we can just burn the program into the flash. 
+        \item \textbf{State Machine} The paradigm with which FPGA is programmed is different as FPGA supports parallelization and can run multiple blocks all at once. To take advantage of this, core modules like Flash, UART are implemented as state machine.
+        \item \textbf{Uses Open source toolchains only} Sipeed also provides its own proprietary IDE, But opensource fpga tooling and documentation is very good for TANG NANO 9k. 
+        \item \textbf{Communication Protocols}
+        \begin{itemize}
+            \item Microcontroller and OLED screen communicate with I2C protocol 
+            \item FPGA and Flash communicate with SPI protocol
+            \item FPGA and Microcontroller communicate with UART  
+        \end{itemize}
+    \end{itemize}
     \newpage
     \section{Conclusion and Recommendatation}
+    The project was a great way to gain hands-on expereince with FPGA developement and custom ISA implementation. The project can be improved further by removing the limitations discussed below
+
     \subsection{Limitation}
 
+    \begin{itemize}
+        \item \textbf{Limited user interface/Input Device} The input device for the console consists of only 4 pushbuttons, which may not provide a rich user interface for playing games. This limits the types of games that can be played on the screen 
+        \item \textbf{Non Standarized custom ISA} There are reliant and practical architectures like ARM and RISC-V which would have allowed the CPU to run already available games and the CPU would be more reliant and deterministic. 
+        \item \textbf{Limited scalability} The project focuses on specific FPGA and specific OLED which means complex additions like HDMI, VGA would require significant changes to code.
+        \item \textbf{Lack of Sound} Console doesn't have any audio output, which limits the gaming experience. 
+        \item \textbf{Limited Memory} The size of inbuilt flash is 4 megabytes. But due to architecture limitations. only $2^{16}$ bytes can be accessed.
+        \item \textbf{Display Controller} Screen Unit is managed by microcontroller, but microcontroller can be completely eliminated. Due to time constraints $I_2C$ communication couldn't be implemented in CPU. 
+        \item \textbf{Cost} FPGA is versatile, and it can act as any digital circuit. The tradeoff is it's price. FPGA is good for prototype phase or for projects where ASIC fabrication price is higher than that of FPGA integration.
+        \item \textbf{Limited Instruction Set} Number of instructions is very minimal which code size long and some features is not supported. 
+    \end{itemize}
+
+    
     \subsection{Future Enhancement}
 
-    hello leslie lamport \citebib{Herlocker:2004}
-     hello leslie lamport \citebib{HuLiu:2004}
+    \begin{itemize}
+        \item \textbf{Adding Support to more Input/Output Devices} USB support can be added which can allow range of controllers for input device. As for Output Devices we can integrate HDMI output and instead of hardcoding the screen resolution we can use clip space coordinates which will accomodate for all screen sizes. 
+        \item \textbf{Adding More Games} More games can be added, and selection menu can also be added where users can select and play from range of games.
+        \item \textbf{Adding Sound Support} Interactivity is very important and for that we can add sound support which makes the game more immersive 
+        \item \textbf{Switch to RISC-V or ARM Architecture} Switching to such architecture allows the games to be portable. Games that are already compiled for such architecture will be able to run on the CPU itself.
+        \item \textbf{Improve Performance} Currently on fetch cycle, only 16 bits is read from flash memory. Instead we can read more bytes from it.
+        \item \textbf{Introduce Pipelining} Pipelining creates two different units inside the CPU. Execution unit will keep on executing and fetch unit will keep on fetching parallely, which increases the performance of the CPU.
+        \item \textbf{Networking Capabilities} We can leverage chips like ESP8266 which already has implemented TCP/IP stack to create multiplayer games. 
+        \item \textbf{Create Operating System} Core features of operating system like memory management, network capabilites, exceptions, interrupts and paging can be implemented. 
+    \end{itemize}
 
-    hello leslie lamport \citeref{opinion:lexicon}
 
-    \bibliographystylebib{plain}
+    \bibliographystylebib{apalike}
     \bibliographybib{Bibliography}
 
-    \bibliographystyleref{plain}
+
+    \bibliographystyleref{unsrt}
     \bibliographyref{References}
 \end{document}
