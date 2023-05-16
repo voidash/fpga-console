@@ -1,7 +1,7 @@
 \documentclass[a4paper,12pt]{article}
 
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{multibib}
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -133,6 +133,7 @@
     DSA & Domain Specific Architecture\\
     RISC & Reduced Instruction Set Architecture\\
     CISC & Complex Instruction Set Architecture\\
+    ASIC & Application Specific Integrated Circuit\\
     \hline
     \end{tabular}
 
@@ -634,4 +635,23 @@
 
     \bibliographystyleref{unsrt}
     \bibliographyref{References}
+    \section{Appendix}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/fpga_bhoos.jpg} 
+    \caption{Game Console on Breadboard}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/fpga_flappy.jpg} 
+    \caption{Flappy Bird style game on console}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/fpga_pong.jpg} 
+    \caption{Pong style game on console}
+    \end{figure}
 \end{document}
