@@ -58,7 +58,6 @@ reg enableFlash = 1;
     );
 
 
-
     uart #(DELAY_FRAMES, MEMORY_LENGTH) dataSend(
         clk,
         flashByteRead,

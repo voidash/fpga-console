@@ -84,6 +84,8 @@ reg [15:0] param = 0, command = 0;
 
 reg [15:0] waitCounter = 0;
 
+reg [5:0] cmd;
+
 // state machine for our CPU
 localparam STATE_FETCH = 0;
 localparam STATE_FETCH_WAIT_START = 1;
@@ -133,7 +135,7 @@ always @(posedge clk) begin
             end
         end
         STATE_DECODE: begin
-            pc <= pc + 1;
+            pc <= pc + 2;
             if (command[15]) begin
                 state <= STATE_RETRIEVE;
             end else begin
@@ -158,11 +160,12 @@ always @(posedge clk) begin
                 param <= flashByteRead;
                 flashEnabled <= 0;
                 state <= STATE_EXECUTE;
-                pc <= pc + 1;
+                pc <= pc + 2;
             end
         end
         STATE_EXECUTE: begin
             state <= STATE_FETCH;
+            cmd <= command[14:9];
             case (command[14:9])
                 CMD_CLR: begin
                     if(command[0])

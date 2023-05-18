@@ -14,6 +14,7 @@ reg btn2 = 1;
 reg btn3 = 1;
 reg btn4 = 1;
 
+reg [300:0] command_string = "";
 
 // CPU module that adds two numbers
 cpu UUT(
@@ -33,14 +34,39 @@ cpu UUT(
 );
 
 initial begin
-    // clear A register
+    // clear B register
     #1 flashByteRead = 16'h0002;
+    command_string = "clear b reg";
     #3 flashDataReady = 1;
     #4 flashDataReady = 0;
-    // Add AC to B
-    #8 flashByteRead = 16'h0104;
-    #11 flashDataReady = 1;
-    #12 flashDataReady = 0;
+    // Add AC to C 
+    #3 flashByteRead = 16'h0201;
+    command_string = "add AC to C";
+    #3 flashDataReady = 1;
+    #4 flashDataReady = 0;
+
+    //store AC contents in C 
+    #3 flashByteRead = 16'h0402;
+    command_string = "Store AC contents in C";
+    #3 flashDataReady = 1;
+    #4 flashDataReady = 0;
+
+    // invert A
+    #3 flashByteRead = 16'h0602;
+    command_string = "invert C";
+    #3 flashDataReady = 1;
+    #4 flashDataReady = 0;
+
+    //add intermediate
+    #3 flashByteRead = 16'h8200;
+    command_string = "Add intermediate";
+    #3 flashDataReady = 1;
+    #4 flashDataReady = 0;
+    #3 flashByteRead = 16'h0010;
+    #1 flashDataReady = 1;
+    #4 flashDataReady = 0;
+
+    //test print
 
     #1000 $finish;
 end
