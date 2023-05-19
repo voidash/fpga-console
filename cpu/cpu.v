@@ -1,12 +1,16 @@
-module cpu(
+module 
+cpu
+#(parameter WAIT_TIME = 27000000)
+(
     input clk,
     output reg[23:0] flashReadAddr = 0,
     input [15:0] flashByteRead,
     output reg flashEnabled=0,
     input flashDataReady,
     output reg [5:0] leds = 6'b111111,
-    output reg [100:0] uartData = 100'b0,
+    output reg [255:0] uartData = 255'b0,
     output reg writeUart = 0,
+    input uartWritten,
     input reset,
     input btn1,
     input btn2, 
@@ -69,11 +73,11 @@ localparam CMD_PRNT = 4;
 localparam CMD_JMPZ = 5;
 localparam CMD_WAIT = 6;
 localparam CMD_HLT = 7;
-localparam CMD_SUB = 7;
-localparam CMD_RECT = 8;
-localparam CMD_CIRC = 9;
-localparam CMD_PIX = 10;
-localparam CMD_NUM = 11;
+localparam CMD_SUB = 8;
+localparam CMD_RECT = 9;
+localparam CMD_CIRC = 10;
+localparam CMD_PIX = 11;
+localparam CMD_NUM = 12;
 
 
 reg [5:0] state = 0;
@@ -98,6 +102,9 @@ localparam STATE_EXECUTE = 7;
 localparam STATE_HALT = 8;
 localparam STATE_WAIT = 9;
 localparam STATE_PRINT = 10;
+localparam STATE_WRITE_UART_WAIT = 11;
+
+reg[32:0] uartDebounce = 0;
 
 
 always @(posedge clk) begin
@@ -207,7 +214,14 @@ always @(posedge clk) begin
                         a <= ~a;
                 end
                 CMD_PRNT: begin
-                    // todo
+                    writeUart <= 1;
+                    uartData = {"PRINT ", 
+                    8'd48 + param[15:12], 
+                    8'd48 + param[11:8], 
+                    8'd48 + param[7:4] , 
+                    8'd48 + param[3:0]};
+
+                    state <= STATE_WRITE_UART_WAIT; 
                 end
                 CMD_JMPZ: begin
                     pc <= (ac == 8'd0) ? {3'b0, param} : pc;
@@ -222,6 +236,7 @@ always @(posedge clk) begin
 
             endcase
         end
+
         STATE_WAIT: begin
             if (waitCounter == 27000) begin
                 param <= param -1;
@@ -230,6 +245,19 @@ always @(posedge clk) begin
                     state <= STATE_FETCH;
             end else 
                 waitCounter <= waitCounter + 1;
+        end
+        STATE_WRITE_UART_WAIT: begin
+            // 10ms wait
+            if(uartDebounce == WAIT_TIME) begin
+                if (uartWritten) begin
+                    writeUart <= 0;
+                    uartData <= 0;
+                    uartDebounce <= 0;
+                    state <= STATE_FETCH;
+                end
+            end
+            else 
+            uartDebounce <= uartDebounce + 1;
         end
 
         STATE_HALT: begin

@@ -1,18 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
-[*] Wed May 17 04:14:29 2023
+[*] Thu May 18 13:49:02 2023
 [*]
 [dumpfile] "/home/cdjk/github/verilog/cpu/cpu_test.vcd"
-[dumpfile_mtime] "Wed May 17 04:14:08 2023"
-[dumpfile_size] 11706
+[dumpfile_mtime] "Thu May 18 13:48:46 2023"
+[dumpfile_size] 13234
 [savefile] "/home/cdjk/github/verilog/cpu/cpu_waveform.gtkw"
-[timestart] 0
+[timestart] 55
 [size] 1356 689
 [pos] -1 -1
-*-3.900000 41 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-3.600000 81 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] cpu_tb.
 [sst_width] 276
-[signals_width] 198
+[signals_width] 258
 [sst_expanded] 1
 [sst_vpaned_height] 189
 @28
@@ -25,12 +25,15 @@ cpu_tb.UUT.flashDataReady
 cpu_tb.UUT.flashReadAddr[23:0]
 cpu_tb.UUT.flashByteRead[15:0]
 cpu_tb.UUT.command[15:0]
-@821
+@820
 cpu_tb.command_string[300:0]
+cpu_tb.uartData[100:0]
 @22
 cpu_tb.UUT.cmd[5:0]
 cpu_tb.UUT.ac[9:0]
+@24
 cpu_tb.UUT.param[15:0]
+@22
 cpu_tb.UUT.a[9:0]
 cpu_tb.UUT.b[9:0]
 cpu_tb.UUT.c[9:0]

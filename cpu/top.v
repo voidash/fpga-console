@@ -22,28 +22,32 @@ end
 
 reg [23:0] flashReadAddr = 0;
 reg enableFlash = 1;
-    always @(posedge clk)
-    begin
-        if (counter == 32'd10000000)
-        begin
-            enableFlash <= 0;
-            counter <= 0;
-        end
-        else 
-            counter <= counter + 1;
-    end
 
-    always @(negedge btn1)
-    begin
-        flashReadAddr <= flashReadAddr + 1;
-        enableFlash <= 1;
-        counter <= 0;
-    end
+    // always @(posedge clk)
+    // begin
+    //     if (counter == 32'd10000000)
+    //     begin
+    //         enableFlash <= 0;
+    //         counter <= 0;
+    //     end
+    //     else 
+    //         counter <= counter + 1;
+    // end
+
+    // always @(negedge btn1)
+    // begin
+    //     flashReadAddr <= flashReadAddr + 1;
+    //     enableFlash <= 1;
+    //     counter <= 0;
+    // end
 
     localparam MEMORY_LENGTH = 2;
+    localparam UART_MEMORY_LENGTH = 32;
     localparam DELAY_FRAMES = 234;
+
     wire [((MEMORY_LENGTH * 8) - 1):0] flashByteRead;
     wire flashDataReady;
+    wire uartWritten;
 
     flashNavigator #(STARTUP_WAIT, MEMORY_LENGTH) externalFlash(
         clk,
@@ -63,6 +67,7 @@ reg enableFlash = 1;
         flashByteRead,
         uart_tx,
         flashDataReady,
+        uartWritten,
     );
 
     wire writeUart;

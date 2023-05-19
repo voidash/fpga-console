@@ -9,7 +9,8 @@ module uart
     input clk,
     input [((MEMORY_LENGTH * 8) -1):0] dataToSend,
     output uart_tx,
-    input data_ready
+    input data_ready,
+    output data_written
 );
 
 reg [3:0] txState = 0;
@@ -33,9 +34,10 @@ always @(posedge clk) begin
     case (txState)
         TX_STATE_IDLE: begin
             // buttons are active low
-            if (data_ready == 0) begin
+            if (data_ready == 1) begin
                 txState <= TX_STATE_START_BIT;
                 txCounter <= 0;
+                data_written <= 0;
                 txByteCounter <= 0;
             end
             else begin
@@ -81,8 +83,8 @@ always @(posedge clk) begin
         TX_STATE_DEBOUNCE: begin
             // about 10ms as the speed is 27Mhz 
             if (txCounter == 32'd27000000) begin
-                if (data_ready == 1)  
                     txState <= TX_STATE_IDLE;
+                    data_written <= 1;
             end else
                 txCounter <= txCounter + 1;
         end
