@@ -1,0 +1,19 @@
+ADD #0
+STA A
+ADD #30 
+STA B
+
+ADD #5
+STA C
+ADD #20 
+
+
+ADD #123
+STA A
+ADD #30 
+STA B
+
+ADD #5 
+STA C
+ADD #20 
+
