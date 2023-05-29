@@ -1,36 +1,55 @@
-# verilog
+# FPGA-Console 
+<center>
+    <img src="./screenshots/logo.png" width="200px"/>
+</center>
+
+## A Simple Game Console built from the Ground Up, from its CPU design to game design using FPGA
 
 
-Problem set from https://hdlbits.01xz.net/wiki/Problem_sets
 
-- Install Iverilog
-- install gtkwave
+- Using Tang Nano 9k FPGA, custom CPU is created
+- ESP8266 and SSD1306 acts as a Screen controller. ESP8266 and SSD1306 communicate with I2C protocol
+- Uses OSS-CAD tools
+- CPU and screen controller talks with each other through UART. 
+- FPGA and flash memory communicates using SPI protocol
+- FPGA and display module communicates using UART 
 
-`iverilog file.v`
+# Tools and Stuff
 
-`vvp a.out`
+- **FPGA used** : Tang Nano 9k
+- **Screen** : SSD1306
+- **Synthesis** : Yosys,synth_gowin
+- **place and Route**: nextpnr-gowin
+- **Bitstream generator**: gowin_pack
+- **load**: openFPGALoader
+- **Assembler**: Written In Rust
 
-`gtkwave file.vcd`
+<center>
+    <img src="./sem_project_report/images/fpga_bhoos.jpg" width="300px" />
+    <h4>Fig: FPGA in Action</h4>
+</center>
 
-https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-Doc/flash-in-linux.html
+## Architecture of CPU
 
-here is the brief about my project. 
-Name of project: FPGA Console
-What the project does:  Using Tang Nano 9k, create a CPU with custom ISA . Input Device includes OLED Screen, output device includes pushbuttons. The assembly game code can be programmed into Tang Nano 9k flash memory. The game code is fetched, decoded and executed by the CPU. 
-Aim of the Project: Implement custom ISA, create a game console , hands on experience with FPGA development
-Tools Used 
-FPGA used : Tang Nano 9k
-synthesis: Yosys, synth_gowin
-place and Route: nextpnr-gowin
-Bitstream generator: gowin_pack
-load: openFPGALoader
+<img src="./screenshots/architecture.png"/>
+<h4>Fig: Architecture of CPU </h4>
 
-How Project Components Communicate :
-FPGA and flash memory communicates using SPI protocol
-FPGA and display module communicates using UART protocol
-Display module consist of ESP8266 and OLED screen which communicates using I2C protocol 
+--------------
 
-How 
+![](./screenshots/ISA-table.png)
+<h4>Table: ISA Table</h4>
+
+--------------
+
+![](./screenshots/timing.png)
+<h4>Timing Diagram for CPU</h4>
+
+## Schematic Diagram
+
+![](./screenshots/schematic.png)
+
+
+
 
 
  
