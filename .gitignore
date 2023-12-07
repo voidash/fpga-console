@@ -1,6 +1,7 @@
 #ignore all
 *
 #dont ignore files with extension
+!Makefile
 !*.*
 # dont' ignore directory
 !*/

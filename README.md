@@ -33,6 +33,9 @@
 - flash your game to FPGA
     `openFPGALoader -b tangnano9k --external-flash ./cpu/games/pong.bin`
 
+- To verify specific module
+    `iverilog ./cpu/uart.v; vvp a.out; gtkwave new_created.vcd`
+
   
 
 
