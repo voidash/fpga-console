@@ -24,6 +24,18 @@
 - **load**: openFPGALoader
 - **Assembler**: Written In Rust
 
+# CPU 
+
+> You need OSS-CAD-SUITE
+
+- load CPU into FPGA
+    `cd cpu; make all`
+- flash your game to FPGA
+    `openFPGALoader -b tangnano9k --external-flash ./cpu/games/pong.bin`
+
+  
+
+
 <center>
     <img src="./sem_project_report/images/fpga_bhoos.jpg" width="300px" />
     <h4>Fig: FPGA in Action</h4>
